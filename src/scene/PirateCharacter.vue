@@ -4,7 +4,13 @@ import { useGLTF, useAnimations } from "@tresjs/cientos";
 import { useLoop, useTresContext } from "@tresjs/core";
 import * as THREE from "three";
 import { characterPositions, COLLISION_RADIUS } from "./useCharacterPositions";
-import { nearHenry, dialogueOpen, openDialogue, advanceDialogue, INTERACTION_RADIUS } from "./useInteraction";
+import {
+  nearHenry,
+  dialogueOpen,
+  openDialogue,
+  advanceDialogue,
+  INTERACTION_RADIUS,
+} from "./useInteraction";
 
 const { state } = useGLTF("/models/Characters_Captain_Barbarossa.gltf");
 
@@ -15,7 +21,9 @@ const { actions } = useAnimations(animations, sceneObj);
 
 watch(
   actions,
-  (a) => { if (a.Idle) a.Idle.play(); },
+  (a) => {
+    if (a.Idle) a.Idle.play();
+  },
   { deep: true, immediate: true },
 );
 
@@ -37,13 +45,21 @@ const onKeyDown = (e: KeyboardEvent) => {
   }
 };
 const onKeyUp = (e: KeyboardEvent) => keys.delete(e.key.toLowerCase());
+
+const zoom = ref(1);
+const onWheel = (e: WheelEvent) => {
+  zoom.value = Math.max(0.4, Math.min(3, zoom.value + e.deltaY * 0.001));
+};
+
 onMounted(() => {
   globalThis.addEventListener("keydown", onKeyDown);
   globalThis.addEventListener("keyup", onKeyUp);
+  globalThis.addEventListener("wheel", onWheel);
 });
 onUnmounted(() => {
   globalThis.removeEventListener("keydown", onKeyDown);
   globalThis.removeEventListener("keyup", onKeyUp);
+  globalThis.removeEventListener("wheel", onWheel);
 });
 
 let currentAnim = "";
@@ -66,7 +82,8 @@ const playAnim = (name: string) => {
   currentAnim = name;
 };
 
-const { controls } = useTresContext();
+const { camera } = useTresContext();
+const CAM_OFFSET = new THREE.Vector3(0, 15, 25);
 const { onBeforeRender } = useLoop();
 onBeforeRender(({ delta }) => {
   let dx = 0;
@@ -80,8 +97,9 @@ onBeforeRender(({ delta }) => {
 
   if (dx !== 0 || dz !== 0) {
     facingAngle.value = Math.atan2(dx, dz);
-    posX.value += dx * SPEED * delta;
-    posZ.value += dz * SPEED * delta;
+    const speed = SPEED * (keys.has("shift") ? 2 : 1);
+    posX.value += dx * speed * delta;
+    posZ.value += dz * speed * delta;
   }
 
   const cx = posX.value - characterPositions.henry.x;
@@ -110,7 +128,16 @@ onBeforeRender(({ delta }) => {
     playAnim(dx !== 0 || dz !== 0 ? "Walk" : "Idle");
   }
 
-  controls.value?.target.set(posX.value, posY, posZ.value);
+  const activeCam = camera.activeCamera.value;
+  if (activeCam) {
+    const z = zoom.value;
+    activeCam.position.set(
+      posX.value + CAM_OFFSET.x * z,
+      posY + CAM_OFFSET.y * z,
+      posZ.value + CAM_OFFSET.z * z,
+    );
+    activeCam.lookAt(posX.value, posY, posZ.value);
+  }
 });
 </script>
 
