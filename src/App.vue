@@ -76,11 +76,11 @@ const sidebarOpen = ref(false);
       <div class="flex flex-col gap-1 flex-1">
         <span
           class="text-xs font-semibold uppercase tracking-wider"
-          :class="dialogue[dialogueIndex].speaker === 'Omar' ? 'text-blue-400' : 'text-red-400'"
+          :class="dialogue[dialogueIndex]?.speaker === 'Omar' ? 'text-blue-400' : 'text-red-400'"
         >
-          {{ dialogue[dialogueIndex].speaker }}
+          {{ dialogue[dialogueIndex]?.speaker }}
         </span>
-        <p class="text-sm text-gray-800">{{ dialogue[dialogueIndex].line }}</p>
+        <p class="text-sm text-gray-800">{{ dialogue[dialogueIndex]?.line }}</p>
       </div>
       <span class="text-xs text-gray-400 shrink-0">
         {{ dialogueIndex < dialogue.length - 1 ? "Press K to continue" : "Press K to close" }}
