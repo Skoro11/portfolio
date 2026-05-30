@@ -3,6 +3,8 @@ import { ref, computed, watch, shallowRef, onMounted, onUnmounted } from "vue";
 import { useGLTF, useAnimations } from "@tresjs/cientos";
 import { useLoop, useTresContext } from "@tresjs/core";
 import * as THREE from "three";
+import { characterPositions, COLLISION_RADIUS } from "./useCharacterPositions";
+import { nearHenry, dialogueOpen, openDialogue, advanceDialogue, INTERACTION_RADIUS } from "./useInteraction";
 
 const { state } = useGLTF("/models/Characters_Captain_Barbarossa.gltf");
 
@@ -13,9 +15,7 @@ const { actions } = useAnimations(animations, sceneObj);
 
 watch(
   actions,
-  (a) => {
-    if (a.Idle) a.Idle.play();
-  },
+  (a) => { if (a.Idle) a.Idle.play(); },
   { deep: true, immediate: true },
 );
 
@@ -31,6 +31,10 @@ const keys = new Set<string>();
 const onKeyDown = (e: KeyboardEvent) => {
   keys.add(e.key.toLowerCase());
   if (e.key.toLowerCase() === "j") playAnim("Sword");
+  if (e.key.toLowerCase() === "k") {
+    if (dialogueOpen.value) advanceDialogue();
+    else if (nearHenry.value) openDialogue();
+  }
 };
 const onKeyUp = (e: KeyboardEvent) => keys.delete(e.key.toLowerCase());
 onMounted(() => {
@@ -67,16 +71,32 @@ const { onBeforeRender } = useLoop();
 onBeforeRender(({ delta }) => {
   let dx = 0;
   let dz = 0;
-  if (keys.has("w") || keys.has("arrowup")) dz -= 1;
-  if (keys.has("s") || keys.has("arrowdown")) dz += 1;
-  if (keys.has("a") || keys.has("arrowleft")) dx -= 1;
-  if (keys.has("d") || keys.has("arrowright")) dx += 1;
+  if (!dialogueOpen.value) {
+    if (keys.has("w") || keys.has("arrowup")) dz -= 1;
+    if (keys.has("s") || keys.has("arrowdown")) dz += 1;
+    if (keys.has("a") || keys.has("arrowleft")) dx -= 1;
+    if (keys.has("d") || keys.has("arrowright")) dx += 1;
+  }
 
   if (dx !== 0 || dz !== 0) {
     facingAngle.value = Math.atan2(dx, dz);
     posX.value += dx * SPEED * delta;
     posZ.value += dz * SPEED * delta;
   }
+
+  const cx = posX.value - characterPositions.henry.x;
+  const cz = posZ.value - characterPositions.henry.z;
+  const dist = Math.sqrt(cx * cx + cz * cz);
+
+  if (dist < COLLISION_RADIUS && dist > 0) {
+    posX.value = characterPositions.henry.x + (cx / dist) * COLLISION_RADIUS;
+    posZ.value = characterPositions.henry.z + (cz / dist) * COLLISION_RADIUS;
+  }
+
+  nearHenry.value = dist < INTERACTION_RADIUS;
+
+  characterPositions.barbarossa.x = posX.value;
+  characterPositions.barbarossa.z = posZ.value;
 
   if (ONE_SHOT.has(currentAnim)) {
     const act = actions[currentAnim];
@@ -89,6 +109,8 @@ onBeforeRender(({ delta }) => {
   if (!ONE_SHOT.has(currentAnim)) {
     playAnim(dx !== 0 || dz !== 0 ? "Walk" : "Idle");
   }
+
+  controls.value?.target.set(posX.value, posY, posZ.value);
 });
 </script>
 
