@@ -3,6 +3,7 @@ import { TresCanvas } from "@tresjs/core";
 import { OrbitControls } from "@tresjs/cientos";
 import Floor from "./scene/Floor.vue";
 import PirateCharacter from "./scene/PirateCharacter.vue";
+import HenryCharacter from "./scene/HenryCharacter.vue";
 const MAX_POLAR = Math.PI / 2 - 0.05;
 </script>
 
@@ -15,6 +16,7 @@ const MAX_POLAR = Math.PI / 2 - 0.05;
       <TresDirectionalLight :position="[10, 20, 10]" :intensity="2" />
       <Floor />
       <PirateCharacter />
+      <HenryCharacter />
     </TresCanvas>
   </div>
 </template>
