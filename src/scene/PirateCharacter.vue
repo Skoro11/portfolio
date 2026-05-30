@@ -4,6 +4,7 @@ import { useGLTF, useAnimations } from "@tresjs/cientos";
 import { useLoop, useTresContext } from "@tresjs/core";
 import * as THREE from "three";
 import { characterPositions, COLLISION_RADIUS } from "./useCharacterPositions";
+import { swordSound, speakSound, walkSound } from "./useAudio";
 import {
   nearHenry,
   dialogueOpen,
@@ -38,10 +39,18 @@ const ONE_SHOT = new Set(["Sword"]);
 const keys = new Set<string>();
 const onKeyDown = (e: KeyboardEvent) => {
   keys.add(e.key.toLowerCase());
-  if (e.key.toLowerCase() === "j") playAnim("Sword");
+  if (e.key.toLowerCase() === "j" && !ONE_SHOT.has(currentAnim)) {
+    playAnim("Sword");
+    swordSound.currentTime = 0;
+    swordSound.play();
+  }
   if (e.key.toLowerCase() === "k") {
     if (dialogueOpen.value) advanceDialogue();
-    else if (nearHenry.value) openDialogue();
+    else if (nearHenry.value) {
+      speakSound.currentTime = 0;
+      speakSound.play();
+      openDialogue();
+    }
   }
 };
 const onKeyUp = (e: KeyboardEvent) => keys.delete(e.key.toLowerCase());
@@ -88,7 +97,7 @@ const { onBeforeRender } = useLoop();
 onBeforeRender(({ delta }) => {
   let dx = 0;
   let dz = 0;
-  if (!dialogueOpen.value) {
+  if (!dialogueOpen.value && !ONE_SHOT.has(currentAnim)) {
     if (keys.has("w") || keys.has("arrowup")) dz -= 1;
     if (keys.has("s") || keys.has("arrowdown")) dz += 1;
     if (keys.has("a") || keys.has("arrowleft")) dx -= 1;
@@ -124,10 +133,18 @@ onBeforeRender(({ delta }) => {
     }
   }
 
+  const isMoving = dx !== 0 || dz !== 0;
+  const isSprinting = keys.has("shift");
+
   if (!ONE_SHOT.has(currentAnim)) {
-    playAnim(dx !== 0 || dz !== 0 ? "Walk" : "Idle");
+    playAnim(isMoving ? "Walk" : "Idle");
   }
 
+  if (actions["Walk"]) actions["Walk"].timeScale = isSprinting ? 3 : 1.5;
+
+  if (isMoving && walkSound.paused) walkSound.play();
+  else if (!isMoving && !walkSound.paused) walkSound.pause();
+  walkSound.playbackRate = isSprinting ? 2.5 : 1.5;
   const activeCam = camera.activeCamera.value;
   if (activeCam) {
     const z = zoom.value;
