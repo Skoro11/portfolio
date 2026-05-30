@@ -24,7 +24,6 @@ onUnmounted(() => {
   globalThis.removeEventListener("keyup", onKeyUp);
 });
 
-const { controls } = useTresContext();
 const { onBeforeRender } = useLoop();
 onBeforeRender(({ delta }) => {
   if (keys.has("w") || keys.has("arrowup")) posZ.value -= SPEED * delta;
@@ -42,8 +41,6 @@ onBeforeRender(({ delta }) => {
     posY.value = GROUND_Y;
     velY = 0;
   }
-
-  controls.value?.target.set(posX.value, posY.value, posZ.value);
 });
 </script>
 

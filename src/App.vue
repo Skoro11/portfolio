@@ -2,8 +2,7 @@
 import { TresCanvas } from "@tresjs/core";
 import { OrbitControls } from "@tresjs/cientos";
 import Floor from "./scene/Floor.vue";
-import MovableBox from "./scene/MovableBox.vue";
-
+import PirateCharacter from "./scene/PirateCharacter.vue";
 const MAX_POLAR = Math.PI / 2 - 0.05;
 </script>
 
@@ -15,7 +14,7 @@ const MAX_POLAR = Math.PI / 2 - 0.05;
       <TresAmbientLight :intensity="1" />
       <TresDirectionalLight :position="[10, 20, 10]" :intensity="2" />
       <Floor />
-      <MovableBox />
+      <PirateCharacter />
     </TresCanvas>
   </div>
 </template>
