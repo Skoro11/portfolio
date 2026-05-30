@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { TresCanvas } from "@tresjs/core";
 import { OrbitControls } from "@tresjs/cientos";
-import KranGrafik from "./kran/KranGrafik.vue";
 import Floor from "./scene/Floor.vue";
+import MovableBox from "./scene/MovableBox.vue";
+
+const MAX_POLAR = Math.PI / 2 - 0.05;
 </script>
 
 <template>
-  <div class="relative h-screen w-full overflow-hidden bg-gray-100">
-    <!-- Teleport target for component overlays — pointer-events-none so it doesn't block OrbitControls -->
-    <div id="scene-overlay" class="absolute inset-0 z-10 pointer-events-none" />
-    <TresCanvas clear-color="#e0e0e0">
-      <TresPerspectiveCamera :position="[10, 10, 10]" :lookAt="[0, 0, 0]" />
-      <OrbitControls />
+  <div class="h-screen w-full">
+    <TresCanvas clear-color="#87CEEB">
+      <TresPerspectiveCamera :position="[0, 5, 15]" />
+      <OrbitControls :target="[0, -14.75, 0]" :max-polar-angle="MAX_POLAR" />
+      <TresAmbientLight :intensity="1" />
+      <TresDirectionalLight :position="[10, 20, 10]" :intensity="2" />
       <Floor />
-      <KranGrafik />
+      <MovableBox />
     </TresCanvas>
   </div>
 </template>
