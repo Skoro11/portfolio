@@ -3,6 +3,7 @@ import { ref, computed, watch, shallowRef } from "vue";
 import { useGLTF, useAnimations, Html } from "@tresjs/cientos";
 import { characterPositions } from "./useCharacterPositions";
 import { nearHenry, dialogueOpen } from "./useInteraction";
+import { getIslandHeight } from "./useIslandHeight";
 
 const { state } = useGLTF("/models/Characters_Henry.gltf");
 
@@ -19,7 +20,7 @@ watch(
 
 const posX = ref(characterPositions.henry.x);
 const posZ = ref(characterPositions.henry.z);
-const posY = -14.75;
+const posY = getIslandHeight(characterPositions.henry.x, characterPositions.henry.z);
 const facingAngle = ref(0);
 </script>
 

@@ -5,6 +5,7 @@ import { useLoop, useTresContext } from "@tresjs/core";
 import * as THREE from "three";
 import { characterPositions, COLLISION_RADIUS } from "./useCharacterPositions";
 import { swordSound, speakSound, walkSound } from "./useAudio";
+import { getIslandHeight } from "./useIslandHeight";
 import {
   nearHenry,
   dialogueOpen,
@@ -30,7 +31,7 @@ watch(
 
 const posX = ref(0);
 const posZ = ref(0);
-const posY = -14.75;
+const posY = ref(getIslandHeight(0, 0));
 const facingAngle = ref(0);
 const SPEED = 15;
 
@@ -122,6 +123,8 @@ onBeforeRender(({ delta }) => {
 
   nearHenry.value = dist < INTERACTION_RADIUS;
 
+  posY.value = getIslandHeight(posX.value, posZ.value);
+
   characterPositions.barbarossa.x = posX.value;
   characterPositions.barbarossa.z = posZ.value;
 
@@ -150,10 +153,10 @@ onBeforeRender(({ delta }) => {
     const z = zoom.value;
     activeCam.position.set(
       posX.value + CAM_OFFSET.x * z,
-      posY + CAM_OFFSET.y * z,
+      posY.value + CAM_OFFSET.y * z,
       posZ.value + CAM_OFFSET.z * z,
     );
-    activeCam.lookAt(posX.value, posY, posZ.value);
+    activeCam.lookAt(posX.value, posY.value, posZ.value);
   }
 });
 </script>
