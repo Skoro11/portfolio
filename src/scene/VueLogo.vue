@@ -9,9 +9,7 @@ const diffuse = texLoader.load("/textures/plywood_diff_1k.jpg");
 const normalMap = exrLoader.load("/textures/plywood_nor_gl_1k.exr");
 const roughMap = exrLoader.load("/textures/plywood_rough_1k.exr");
 
-const outerDiffuse = texLoader.load(
-  "/textures/fine_grained_wood_col_1k.jpg",
-);
+const outerDiffuse = texLoader.load("/textures/fine_grained_wood_col_1k.jpg");
 const outerNormalMap = exrLoader.load(
   "/textures/fine_grained_wood_nor_gl_1k.exr",
 );
