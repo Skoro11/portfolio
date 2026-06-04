@@ -9,6 +9,7 @@ import { dialogueOpen, dialogueIndex, dialogue } from "./scene/useInteraction";
 import { swordSound } from "./scene/useAudio";
 import ShipBig from "./scene/ShipBig.vue";
 import ShipSmall from "./scene/ShipSmall.vue";
+import VueLogo from "./scene/VueLogo.vue";
 const bgMusic = new Audio("/sound/background.wav");
 bgMusic.loop = true;
 bgMusic.volume = 0.01;
@@ -56,6 +57,7 @@ const sidebarOpen = ref(false);
       />
       <ShipBig />
       <ShipSmall />
+      <VueLogo :position="[-210, -8, 0]" :scale="2" />
       <PirateCharacter />
       <HenryCharacter />
     </TresCanvas>
