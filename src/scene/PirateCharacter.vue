@@ -58,7 +58,7 @@ const onKeyUp = (e: KeyboardEvent) => keys.delete(e.key.toLowerCase());
 
 const zoom = ref(1);
 const onWheel = (e: WheelEvent) => {
-  zoom.value = Math.max(0.4, Math.min(3, zoom.value + e.deltaY * 0.001));
+  zoom.value = Math.max(0.4, Math.min(8, zoom.value + e.deltaY * 0.001));
 };
 
 onMounted(() => {
