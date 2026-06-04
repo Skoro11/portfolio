@@ -11,6 +11,7 @@ import ShipBig from "./scene/ShipBig.vue";
 import ShipSmall from "./scene/ShipSmall.vue";
 import VueLogo from "./scene/VueLogo.vue";
 import PythonLogo from "./scene/PythonLogo.vue";
+import TailwindLogo from "./scene/TailwindLogo.vue";
 const bgMusic = new Audio("/sound/background.wav");
 bgMusic.loop = true;
 bgMusic.volume = 0.01;
@@ -60,6 +61,7 @@ const sidebarOpen = ref(false);
       <ShipSmall />
       <VueLogo :position="[-210, -8, 0]" :scale="2" />
       <PythonLogo :position="[0, -3, 0]" :scale="0.1" />
+      <TailwindLogo :position="[-200, 5, 10]" :scale="0.02" />
       <PirateCharacter />
       <HenryCharacter />
     </TresCanvas>
