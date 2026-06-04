@@ -3,7 +3,12 @@ import { ref, computed, watch, shallowRef, onMounted, onUnmounted } from "vue";
 import { useGLTF, useAnimations } from "@tresjs/cientos";
 import { useLoop, useTresContext } from "@tresjs/core";
 import * as THREE from "three";
-import { characterPositions, COLLISION_RADIUS } from "./useCharacterPositions";
+import {
+  characterPositions,
+  COLLISION_RADIUS,
+  SHIP_SMALL_POS,
+  SHIP_SMALL_REPEL_RADIUS,
+} from "./useCharacterPositions";
 import { swordSound, speakSound, walkSound } from "./useAudio";
 import { getIslandHeight } from "./useIslandHeight";
 import {
@@ -29,7 +34,7 @@ watch(
   { deep: true, immediate: true },
 );
 
-const posX = ref(0);
+const posX = ref(-210);
 const posZ = ref(0);
 const posY = ref(getIslandHeight(0, 0));
 const facingAngle = ref(0);
@@ -122,6 +127,14 @@ onBeforeRender(({ delta }) => {
   }
 
   nearHenry.value = dist < INTERACTION_RADIUS;
+
+  const sx = posX.value - SHIP_SMALL_POS.x;
+  const sz = posZ.value - SHIP_SMALL_POS.z;
+  const shipDist = Math.sqrt(sx * sx + sz * sz);
+  if (shipDist < SHIP_SMALL_REPEL_RADIUS && shipDist > 0) {
+    posX.value = SHIP_SMALL_POS.x + (sx / shipDist) * SHIP_SMALL_REPEL_RADIUS;
+    posZ.value = SHIP_SMALL_POS.z + (sz / shipDist) * SHIP_SMALL_REPEL_RADIUS;
+  }
 
   posY.value = getIslandHeight(posX.value, posZ.value);
 

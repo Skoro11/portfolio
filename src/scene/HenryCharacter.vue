@@ -14,13 +14,15 @@ const { actions } = useAnimations(animations, sceneObj);
 
 watch(
   actions,
-  (a) => { if (a.Idle) a.Idle.play(); },
+  (a) => {
+    if (a.Idle) a.Idle.play();
+  },
   { deep: true, immediate: true },
 );
 
-const posX = ref(characterPositions.henry.x);
-const posZ = ref(characterPositions.henry.z);
-const posY = getIslandHeight(characterPositions.henry.x, characterPositions.henry.z);
+const posX = characterPositions.henry.x;
+const posZ = characterPositions.henry.z;
+const posY = ref(-12.5);
 const facingAngle = ref(0);
 </script>
 
@@ -37,7 +39,11 @@ const facingAngle = ref(0);
 
     <TresMesh :position="[posX, posY + 0.01, posZ]" :rotation-x="-Math.PI / 2">
       <TresCircleGeometry :args="[6, 64]" />
-      <TresMeshBasicMaterial color="#4488ff" :transparent="true" :opacity="0.25" />
+      <TresMeshBasicMaterial
+        color="#4488ff"
+        :transparent="true"
+        :opacity="0.25"
+      />
     </TresMesh>
 
     <Html
@@ -48,7 +54,6 @@ const facingAngle = ref(0);
       <div class="head-prompt">Press K to talk to Omar</div>
     </Html>
   </TresGroup>
-
 </template>
 
 <style>
@@ -65,8 +70,12 @@ const facingAngle = ref(0);
 }
 
 @keyframes prompt-appear {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .hud {

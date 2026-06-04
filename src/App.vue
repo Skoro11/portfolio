@@ -8,6 +8,7 @@ import HenryCharacter from "./scene/HenryCharacter.vue";
 import { dialogueOpen, dialogueIndex, dialogue } from "./scene/useInteraction";
 import { swordSound } from "./scene/useAudio";
 import ShipBig from "./scene/ShipBig.vue";
+import ShipSmall from "./scene/ShipSmall.vue";
 const bgMusic = new Audio("/sound/background.wav");
 bgMusic.loop = true;
 bgMusic.volume = 0.01;
@@ -54,6 +55,7 @@ const sidebarOpen = ref(false);
         :speed="0.4"
       />
       <ShipBig />
+      <ShipSmall />
       <PirateCharacter />
       <HenryCharacter />
     </TresCanvas>
