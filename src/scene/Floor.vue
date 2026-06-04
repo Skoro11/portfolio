@@ -1,18 +1,23 @@
 <script setup lang="ts">
+import * as THREE from "three";
 import { useLoop } from "@tresjs/core";
 
 const RADIUS     = 225;
 const MAX_HEIGHT = 12;
 
+const sandTexture = new THREE.TextureLoader().load("/textures/mud_cracked_dry_riverbed_002_diff_1k.jpg");
+sandTexture.wrapS = sandTexture.wrapT = THREE.RepeatWrapping;
+
 const vertexShader = /* glsl */`
   varying float vDist;
   varying float vElevation;
+  varying vec2 vWorldXY;
 
   void main() {
     float dist = length(position.xy) / ${RADIUS}.0;
     vDist = dist;
+    vWorldXY = position.xy;
 
-    // Smooth dome: peaks at center, 0 at edge
     float dome = max(0.0, 1.0 - dist * dist) * ${MAX_HEIGHT}.0;
     vElevation = dome;
 
@@ -23,24 +28,32 @@ const vertexShader = /* glsl */`
 const fragmentShader = /* glsl */`
   varying float vDist;
   varying float vElevation;
+  varying vec2 vWorldXY;
   uniform float uTime;
+  uniform sampler2D uSandTexture;
 
   void main() {
     if (vDist > 1.0) discard;
 
-    vec3 sand  = vec3(0.92, 0.84, 0.60);
+    vec2 uv = vWorldXY / ${RADIUS}.0 * 12.0;
+    vec3 sandColor = texture2D(uSandTexture, uv).rgb * 1.4;
+
     vec3 grass = vec3(0.28, 0.58, 0.18);
     vec3 peak  = vec3(0.38, 0.68, 0.22);
 
-    float t = smoothstep(0.0, 6.0, vElevation);
-    vec3 color = mix(sand, grass, t);
+    float grassBlend = smoothstep(0.0, 6.0, vElevation);
+    vec3 color = mix(sandColor, grass, grassBlend);
     color = mix(color, peak, smoothstep(8.0, 12.0, vElevation));
 
     gl_FragColor = vec4(color, 1.0);
   }
 `;
 
-const uniforms = { uTime: { value: 0 } };
+const uniforms = {
+  uTime: { value: 0 },
+  uSandTexture: { value: sandTexture },
+};
+
 const { onBeforeRender } = useLoop();
 onBeforeRender(({ elapsed }) => { uniforms.uTime.value = elapsed; });
 </script>

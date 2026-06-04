@@ -5,18 +5,18 @@ import { EXRLoader } from "three/addons/loaders/EXRLoader.js";
 const texLoader = new THREE.TextureLoader();
 const exrLoader = new EXRLoader();
 
-const diffuse = texLoader.load("/textures/textures/plywood_diff_1k.jpg");
-const normalMap = exrLoader.load("/textures/textures/plywood_nor_gl_1k.exr");
-const roughMap = exrLoader.load("/textures/textures/plywood_rough_1k.exr");
+const diffuse = texLoader.load("/textures/plywood_diff_1k.jpg");
+const normalMap = exrLoader.load("/textures/plywood_nor_gl_1k.exr");
+const roughMap = exrLoader.load("/textures/plywood_rough_1k.exr");
 
 const outerDiffuse = texLoader.load(
-  "/textures/textures/fine_grained_wood_col_1k.jpg",
+  "/textures/fine_grained_wood_col_1k.jpg",
 );
 const outerNormalMap = exrLoader.load(
-  "/textures/textures/fine_grained_wood_nor_gl_1k.exr",
+  "/textures/fine_grained_wood_nor_gl_1k.exr",
 );
 const outerRoughMap = texLoader.load(
-  "/textures/textures/fine_grained_wood_rough_1k.jpg",
+  "/textures/fine_grained_wood_rough_1k.jpg",
 );
 
 const extrudeSettings = {
