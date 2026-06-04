@@ -9,9 +9,15 @@ const diffuse = texLoader.load("/textures/textures/plywood_diff_1k.jpg");
 const normalMap = exrLoader.load("/textures/textures/plywood_nor_gl_1k.exr");
 const roughMap = exrLoader.load("/textures/textures/plywood_rough_1k.exr");
 
-const outerDiffuse = texLoader.load("/textures/textures/fine_grained_wood_col_1k.jpg");
-const outerNormalMap = exrLoader.load("/textures/textures/fine_grained_wood_nor_gl_1k.exr");
-const outerRoughMap = texLoader.load("/textures/textures/fine_grained_wood_rough_1k.jpg");
+const outerDiffuse = texLoader.load(
+  "/textures/textures/fine_grained_wood_col_1k.jpg",
+);
+const outerNormalMap = exrLoader.load(
+  "/textures/textures/fine_grained_wood_nor_gl_1k.exr",
+);
+const outerRoughMap = texLoader.load(
+  "/textures/textures/fine_grained_wood_rough_1k.jpg",
+);
 
 const extrudeSettings = {
   depth: 0.3,
@@ -44,9 +50,11 @@ innerShape.closePath();
 const fixUVs = (geo: THREE.ExtrudeGeometry) => {
   geo.computeBoundingBox();
   const { min, max } = geo.boundingBox!;
-  const uv = geo.attributes.uv;
+  const uv = geo.attributes.uv as THREE.BufferAttribute | undefined;
+  if (!uv) return;
   for (let i = 0; i < uv.count; i++) {
-    uv.setXY(i,
+    uv.setXY(
+      i,
       (uv.getX(i) - min.x) / (max.x - min.x),
       (uv.getY(i) - min.y) / (max.y - min.y),
     );
