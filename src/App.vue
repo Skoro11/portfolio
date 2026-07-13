@@ -60,10 +60,18 @@ const sidebarOpen = ref(false);
       />
       <ShipBig />
       <ShipSmall />
-      <VueLogo :position="[-210, -8, 0]" :scale="2" />
+      <VueLogo :rotation="[0, 1, 0]" :position="[-10, 1, 0]" :scale="2.5" />
       <PythonLogo :position="[0, -3, 0]" :scale="0.1" />
-      <TailwindLogo :position="[-200, 5, 10]" :scale="0.02" />
-      <GitLogo :position="[-185, 5, 10]" :scale="0.04" />
+      <TailwindLogo
+        :rotation="[0, -1.1, 0]"
+        :position="[35, 1.9, 2]"
+        :scale="0.012"
+      />
+      <GitLogo
+        :rotation="[0, Math.PI, Math.PI]"
+        :position="[15, 4, -15]"
+        :scale="0.07"
+      />
       <PirateCharacter />
       <HenryCharacter />
     </TresCanvas>

@@ -79,11 +79,19 @@ const lightWood = new THREE.MeshStandardMaterial({
   metalness: 0,
 });
 
-defineProps<{ position?: [number, number, number]; scale?: number }>();
+defineProps<{
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+  scale?: number;
+}>();
 </script>
 
 <template>
-  <TresGroup :position="position ?? [0, 0, 0]" :scale="scale ?? 1">
+  <TresGroup
+    :position="position ?? [0, 0, 0]"
+    :rotation="rotation ?? [0, 0, 0]"
+    :scale="scale ?? 1"
+  >
     <TresMesh :geometry="outerGeo" :material="darkWood" :position="[0, 1, 0]" />
     <TresMesh
       :geometry="innerGeo"
