@@ -5,7 +5,15 @@ import { Ocean } from "@tresjs/cientos";
 import Floor from "./scene/Floor.vue";
 import PirateCharacter from "./scene/PirateCharacter.vue";
 import HenryCharacter from "./scene/HenryCharacter.vue";
-import { dialogueOpen, dialogueIndex, dialogue } from "./scene/useInteraction";
+import {
+  dialogueOpen,
+  dialogueIndex,
+  activeDialogue,
+  bookcaseMenuOpen,
+  bookcaseMenuIndex,
+  bookcaseTopics,
+  BOOKCASE_EXIT_INDEX,
+} from "./scene/useInteraction";
 import { characterPositions } from "./scene/useCharacterPositions";
 import { swordSound } from "./scene/useAudio";
 import ShipBig from "./scene/ShipBig.vue";
@@ -14,6 +22,7 @@ import VueLogo from "./scene/VueLogo.vue";
 import PythonLogo from "./scene/PythonLogo.vue";
 import TailwindLogo from "./scene/TailwindLogo.vue";
 import GitLogo from "./scene/GitLogo.vue";
+import BookcaseBooks from "./scene/BookcaseBooks.vue";
 const bgMusic = new Audio("/sound/background.wav");
 bgMusic.loop = true;
 bgMusic.volume = 0.01;
@@ -75,6 +84,7 @@ const sidebarOpen = ref(false);
       />
       <PirateCharacter />
       <HenryCharacter />
+      <BookcaseBooks :position="[41.0, -3.5, 9.0]" :scale="4" />
     </TresCanvas>
 
     <!-- Barbossa coordinates -->
@@ -138,22 +148,60 @@ const sidebarOpen = ref(false);
         <span
           class="text-xs font-semibold uppercase tracking-wider"
           :class="
-            dialogue[dialogueIndex]?.speaker === 'Omar'
+            activeDialogue[dialogueIndex]?.speaker === 'Omar'
               ? 'text-blue-400'
               : 'text-red-400'
           "
         >
-          {{ dialogue[dialogueIndex]?.speaker }}
+          {{ activeDialogue[dialogueIndex]?.speaker }}
         </span>
-        <p class="text-sm text-gray-800">{{ dialogue[dialogueIndex]?.line }}</p>
+        <p class="text-sm text-gray-800">
+          {{ activeDialogue[dialogueIndex]?.line }}
+        </p>
       </div>
       <span class="text-xs text-gray-400 shrink-0">
         {{
-          dialogueIndex < dialogue.length - 1
+          dialogueIndex < activeDialogue.length - 1
             ? "Press K to continue"
             : "Press K to close"
         }}
       </span>
+    </div>
+
+    <div
+      v-if="bookcaseMenuOpen"
+      class="fixed bottom-0 left-0 right-0 bg-white z-9999 flex items-center px-6 py-4 gap-4"
+    >
+      <div class="flex flex-col gap-1 flex-1">
+        <span class="text-xs font-semibold uppercase tracking-wider text-blue-400">
+          Bookshelf
+        </span>
+        <div class="flex flex-col gap-1">
+          <span
+            v-for="(topic, i) in bookcaseTopics"
+            :key="topic.title"
+            class="text-sm"
+            :class="
+              i === bookcaseMenuIndex
+                ? 'text-gray-900 font-semibold'
+                : 'text-gray-400'
+            "
+          >
+            {{ i === bookcaseMenuIndex ? "▶ " : "" }}{{ topic.title }}
+          </span>
+          <span
+            class="text-sm"
+            :class="
+              bookcaseMenuIndex === BOOKCASE_EXIT_INDEX
+                ? 'text-gray-900 font-semibold'
+                : 'text-gray-400'
+            "
+          >
+            {{ bookcaseMenuIndex === BOOKCASE_EXIT_INDEX ? "▶ " : "" }}Exit
+          </span>
+        </div>
+      </div>
+      <span class="text-xs text-gray-400 shrink-0">↑↓ to choose, K to select</span>
     </div>
   </div>
 </template>

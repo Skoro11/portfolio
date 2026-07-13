@@ -13,10 +13,20 @@ import { swordSound, speakSound, walkSound } from "./useAudio";
 import { getIslandHeight } from "./useIslandHeight";
 import {
   nearHenry,
+  nearBookcase,
   dialogueOpen,
   openDialogue,
   advanceDialogue,
   INTERACTION_RADIUS,
+  BOOKCASE_POS,
+  BOOKCASE_FRONT_DIR,
+  BOOKCASE_HALF_WIDTH,
+  BOOKCASE_HALF_DEPTH,
+  BOOKCASE_INTERACTION_RADIUS,
+  bookcaseMenuOpen,
+  openBookcaseMenu,
+  moveBookcaseMenu,
+  selectBookcaseTopic,
 } from "./useInteraction";
 
 const { state } = useGLTF("/models/Characters_Captain_Barbarossa.gltf");
@@ -51,11 +61,25 @@ const onKeyDown = (e: KeyboardEvent) => {
     swordSound.play();
   }
   if (e.key.toLowerCase() === "k") {
-    if (dialogueOpen.value) advanceDialogue();
+    if (bookcaseMenuOpen.value) selectBookcaseTopic();
+    else if (dialogueOpen.value) advanceDialogue();
     else if (nearHenry.value) {
       speakSound.currentTime = 0;
       speakSound.play();
       openDialogue();
+    } else if (nearBookcase.value) {
+      openBookcaseMenu();
+    }
+  }
+
+  if (bookcaseMenuOpen.value && !e.repeat) {
+    if (e.key.toLowerCase() === "arrowup" || e.key.toLowerCase() === "w") {
+      moveBookcaseMenu(-1);
+    } else if (
+      e.key.toLowerCase() === "arrowdown" ||
+      e.key.toLowerCase() === "s"
+    ) {
+      moveBookcaseMenu(1);
     }
   }
 };
@@ -103,7 +127,7 @@ const { onBeforeRender } = useLoop();
 onBeforeRender(({ delta }) => {
   let dx = 0;
   let dz = 0;
-  if (!dialogueOpen.value && !ONE_SHOT.has(currentAnim)) {
+  if (!dialogueOpen.value && !bookcaseMenuOpen.value && !ONE_SHOT.has(currentAnim)) {
     if (keys.has("w") || keys.has("arrowup")) dz -= 1;
     if (keys.has("s") || keys.has("arrowdown")) dz += 1;
     if (keys.has("a") || keys.has("arrowleft")) dx -= 1;
@@ -127,6 +151,23 @@ onBeforeRender(({ delta }) => {
   }
 
   nearHenry.value = dist < INTERACTION_RADIUS;
+
+  const bx = posX.value - BOOKCASE_POS.x;
+  const bz = posZ.value - BOOKCASE_POS.z;
+  const bookcaseDist = Math.sqrt(bx * bx + bz * bz);
+
+  if (Math.abs(bx) < BOOKCASE_HALF_WIDTH && Math.abs(bz) < BOOKCASE_HALF_DEPTH) {
+    const overlapX = BOOKCASE_HALF_WIDTH - Math.abs(bx);
+    const overlapZ = BOOKCASE_HALF_DEPTH - Math.abs(bz);
+    if (overlapX < overlapZ) {
+      posX.value = BOOKCASE_POS.x + Math.sign(bx || 1) * BOOKCASE_HALF_WIDTH;
+    } else {
+      posZ.value = BOOKCASE_POS.z + Math.sign(bz || 1) * BOOKCASE_HALF_DEPTH;
+    }
+  }
+
+  const facingDot = bx * BOOKCASE_FRONT_DIR.x + bz * BOOKCASE_FRONT_DIR.z;
+  nearBookcase.value = bookcaseDist < BOOKCASE_INTERACTION_RADIUS && facingDot > 0;
 
   const sx = posX.value - SHIP_SMALL_POS.x;
   const sz = posZ.value - SHIP_SMALL_POS.z;
