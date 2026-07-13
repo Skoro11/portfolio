@@ -34,9 +34,9 @@ watch(
   { deep: true, immediate: true },
 );
 
-const posX = ref(-210);
-const posZ = ref(0);
-const posY = ref(getIslandHeight(0, 0));
+const posX = ref(14.0);
+const posZ = ref(13.0);
+const posY = ref(getIslandHeight(14.0, 13.0));
 const facingAngle = ref(0);
 const SPEED = 15;
 
@@ -139,6 +139,7 @@ onBeforeRender(({ delta }) => {
   posY.value = getIslandHeight(posX.value, posZ.value);
 
   characterPositions.barbarossa.x = posX.value;
+  characterPositions.barbarossa.y = posY.value;
   characterPositions.barbarossa.z = posZ.value;
 
   if (ONE_SHOT.has(currentAnim)) {

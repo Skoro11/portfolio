@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 
 export const characterPositions = reactive({
-  barbarossa: { x: 0, z: 0 },
+  barbarossa: { x: 0, y: 0, z: 0 },
   henry: { x: -210, z: 10 },
 });
 

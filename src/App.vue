@@ -6,6 +6,7 @@ import Floor from "./scene/Floor.vue";
 import PirateCharacter from "./scene/PirateCharacter.vue";
 import HenryCharacter from "./scene/HenryCharacter.vue";
 import { dialogueOpen, dialogueIndex, dialogue } from "./scene/useInteraction";
+import { characterPositions } from "./scene/useCharacterPositions";
 import { swordSound } from "./scene/useAudio";
 import ShipBig from "./scene/ShipBig.vue";
 import ShipSmall from "./scene/ShipSmall.vue";
@@ -64,7 +65,7 @@ const sidebarOpen = ref(false);
       <PythonLogo :position="[0, -3, 0]" :scale="0.1" />
       <TailwindLogo
         :rotation="[0, -1.1, 0]"
-        :position="[35, 1.9, 2]"
+        :position="[35, 3, 2]"
         :scale="0.012"
       />
       <GitLogo
@@ -75,6 +76,15 @@ const sidebarOpen = ref(false);
       <PirateCharacter />
       <HenryCharacter />
     </TresCanvas>
+
+    <!-- Barbossa coordinates -->
+    <div
+      class="fixed top-4 left-4 z-9999 bg-black/70 text-white text-xs px-3 py-2 rounded font-mono"
+    >
+      Barbossa: x={{ characterPositions.barbarossa.x.toFixed(1) }}, y={{
+        characterPositions.barbarossa.y.toFixed(1)
+      }}, z={{ characterPositions.barbarossa.z.toFixed(1) }}
+    </div>
 
     <!-- Sidebar toggle -->
     <button

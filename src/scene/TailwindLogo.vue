@@ -88,7 +88,7 @@ onMounted(() => {
     box.getSize(size);
     const side = Math.max(size.x, size.y) * 1.4;
     const r = side * 0.15;
-    tableGeo.value = new RoundedBoxGeometry(side, side, 40, 6, r);
+    tableGeo.value = new RoundedBoxGeometry(side, side, 60, 6, r);
 
     meshes.value = [
       ...geos.map((geo) => ({
@@ -116,7 +116,7 @@ onMounted(() => {
       v-if="tableGeo"
       :geometry="tableGeo"
       :material="tableMat"
-      :position="[0, 0, -24]"
+      :position="[0, 0, -34]"
     />
 
     <TresGroup :scale="1.2">
